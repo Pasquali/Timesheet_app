@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
+import CardActions from '@material-ui/core/CardActions';
 import AddLineItem from './Components/AddLineItem';
 import Timesheet from './Components/AddTimesheet';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -15,7 +16,8 @@ class App extends Component {
       timesheets: [],
       selectedSheet: {
         description: 'Please create or select a timesheet',
-      }
+      },
+      totalCost: 0
     }
     this.handleSheetSelection = this.handleSheetSelection.bind(this);
   }
@@ -43,6 +45,8 @@ class App extends Component {
       let newArray = this.state.lineItems.concat(res);
       this.setState({lineItems: newArray});
     })
+    .then(() => this.calculateCost())
+
   }
   addTimesheet = (newEntry) => {
     fetch('/save_timesheet', {
@@ -67,6 +71,7 @@ class App extends Component {
     fetch(`/get_line_items?id=${sheet.id}`)
       .then(res => res.json())
       .then(response => this.setState({lineItems: response}))
+      .then(() => this.calculateCost())
   } 
   getFormattedDate(date) {
     const month = date.getMonth() + 1;
@@ -120,6 +125,14 @@ class App extends Component {
       });
       this.setState({lineItems: array}); 
     })
+  }
+  calculateCost() {
+    let totalMinutes = this.state.lineItems.reduce(function(prev, cur) {
+      return +prev + +cur.minutes;
+    }, 0);
+    console.log(totalMinutes);
+    let totalCost = this.state.selectedSheet.rate * totalMinutes;
+    this.setState({totalCost: totalCost})
   }
   render() {
     return (
@@ -179,7 +192,18 @@ class App extends Component {
                       })}
                   </tbody>
                 </table>
+                <div>
+                </div>
                </div> : null}
+               <CardActions>
+                 <div>
+                  Total Cost: {new Intl.NumberFormat('en-US', { 
+                                    style: 'currency', 
+                                    currency: 'USD' 
+                                }).format(this.state.totalCost)
+                              }
+                 </div>
+               </CardActions>
             </Card> 
           </span>    
       </div>
