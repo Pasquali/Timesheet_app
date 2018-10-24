@@ -32,10 +32,14 @@
   margin-top: 20px;
 }
 .line-item-table {
-  margin: 10px;
+  margin: 20px;
   width: 100%;
 }
 .sheet-name {
   width: 180px;
   margin-right: auto;
+}
+.total-time {
+  margin-right: 40px;
+  margin-left: 30px;
 }
