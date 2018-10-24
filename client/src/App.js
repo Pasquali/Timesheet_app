@@ -4,7 +4,8 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import AddLineItem from './Components/AddLineItem';
 import Timesheet from './Components/AddTimesheet';
-
+import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@material-ui/core/Button';
 
 class App extends Component {
   constructor() {
@@ -61,7 +62,7 @@ class App extends Component {
       this.setState({timesheets: newArray});
     })
   }
-  handleSheetSelection(event, sheet) {
+  handleSheetSelection(sheet) {
     this.setState({selectedSheet: sheet});
     fetch(`/get_line_items?id=${sheet.id}`)
       .then(res => res.json())
@@ -73,6 +74,52 @@ class App extends Component {
     const year = date.getFullYear();
     const formattedDate = month + '/' + day + '/' + year;
     return formattedDate;
+  }
+  deleteSheet(sheet) {
+    fetch('/delete_timesheet', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+       sheet_id: sheet.id
+      })
+    }).then(response => {
+      let array = this.state.timesheets;
+      let i = 0;
+      array.forEach(element => {
+        if (element.id === sheet.id) {
+          array.splice(i, 1);
+        } else {
+          i++;
+        }
+      });
+      this.setState({timesheets: array}); 
+    })
+  }
+  deleteLineItem(lineItem) {
+    fetch('/delete_line_item', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        lineItem_id: lineItem.id
+      })
+    }).then(response => {
+      let array = this.state.lineItems;
+      let i = 0;
+      array.forEach(element => {
+        if (element.id === lineItem.id) {
+          array.splice(i, 1);
+        } else {
+          i++;
+        }
+      });
+      this.setState({lineItems: array}); 
+    })
   }
   render() {
     return (
@@ -86,7 +133,18 @@ class App extends Component {
               <div>
                 <ul>
                   {this.state.timesheets.map(sheet => {
-                    return <div key={sheet.id} onClick={(e) => this.handleSheetSelection(e, sheet)}>{sheet.description}</div>
+                    return <div key={sheet.id} >
+                            <span className="sheet-name">
+                              <span
+                                onClick={() => this.handleSheetSelection(sheet)}>{sheet.description}
+                              </span>
+                            </span>
+                            <span>      
+                              <Button onClick={() => this.deleteSheet(sheet)}>
+                                <DeleteIcon />
+                              </Button>
+                            </span>
+                          </div>
                   })}
                 </ul>
               </div>
@@ -104,11 +162,17 @@ class App extends Component {
                     <tr>
                       <th>Date</th>
                       <th>Minutes</th> 
+                      <th></th>
                     </tr>
                       {this.state.lineItems.map(lineItem => {
                         return  <tr  key={lineItem.id}>
                                     <td>{this.getFormattedDate(new Date(lineItem.date))}</td>
                                     <td>{lineItem.minutes}</td>
+                                    <td>      
+                                      <Button onClick={() => this.deleteLineItem(lineItem)}>
+                                        <DeleteIcon />
+                                      </Button>
+                                    </td>
                               </tr>
 
 

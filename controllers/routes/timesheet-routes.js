@@ -41,4 +41,23 @@ router.post("/save_line_item", function(req, res) {
     }).then(lineItem => res.send(lineItem.dataValues))
 });
 
+router.post("/delete_line_item", function(req, res) {
+    LineItem.destroy({
+        where: {
+            id: req.body.lineItem_id
+        }
+    }).then(response => res.send(200));
+})
+
+router.post("/delete_timesheet", function(req, res) {
+    Timesheet.destroy({
+        where: {
+            id: req.body.sheet_id
+        }
+    }).then(response => res.send(200));
+})
+router.put("/edit_description", function(req, res) {
+
+}) 
+
 module.exports = router;
