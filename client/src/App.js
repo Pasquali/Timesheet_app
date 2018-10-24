@@ -72,13 +72,6 @@ class App extends Component {
       .then(response => this.setState({lineItems: response}))
       .then(() => this.calculateCost())
   } 
-  getFormattedDate(date) {
-    const month = date.getMonth() + 1;
-    const day = date.getDate() + 1;
-    const year = date.getFullYear();
-    const formattedDate = month + '/' + day + '/' + year;
-    return formattedDate;
-  }
   deleteSheet(sheet) {
     fetch('/delete_timesheet', {
       method: 'POST',
@@ -130,6 +123,13 @@ class App extends Component {
       this.setState({lineItems: array}); 
     })
     .then(() => this.calculateCost())
+  }
+  getFormattedDate(date) {
+    const month = date.getMonth() + 1;
+    const day = date.getDate() + 1;
+    const year = date.getFullYear();
+    const formattedDate = month + '/' + day + '/' + year;
+    return formattedDate;
   }
   calculateCost() {
     let totalMinutes = this.calculateTotalTime();
@@ -186,14 +186,14 @@ class App extends Component {
                     </tr>
                       {this.state.lineItems.map(lineItem => {
                         return  <tr  key={lineItem.id}>
-                                    <td>{this.getFormattedDate(new Date(lineItem.date))}</td>
-                                    <td>{lineItem.minutes}</td>
-                                    <td>      
-                                      <Button onClick={() => this.deleteLineItem(lineItem)}>
-                                        <DeleteIcon />
-                                      </Button>
-                                    </td>
-                              </tr>
+                                  <td>{this.getFormattedDate(new Date(lineItem.date))}</td>
+                                  <td>{lineItem.minutes}</td>
+                                  <td>      
+                                    <Button onClick={() => this.deleteLineItem(lineItem)}>
+                                      <DeleteIcon />
+                                    </Button>
+                                  </td>
+                                </tr>
 
 
                       })}
@@ -205,10 +205,10 @@ class App extends Component {
                  <div>
                   <span className="total-time">Total Time: {this.calculateTotalTime()}</span>
                   <span>Total Cost: {new Intl.NumberFormat('en-US', { 
-                                    style: 'currency', 
-                                    currency: 'USD' 
-                                }).format(this.state.totalCost)
-                              }</span>
+                                        style: 'currency', 
+                                        currency: 'USD' 
+                                      }).format(this.state.totalCost)
+                                    }</span>
                  </div>
             </Card> 
           </span>    
