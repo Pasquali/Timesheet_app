@@ -133,11 +133,14 @@ class App extends Component {
     .then(() => this.calculateCost())
   }
   calculateCost() {
-    let totalMinutes = this.state.lineItems.reduce(function(prev, cur) {
+    let totalMinutes = this.calculateTotalTime();
+    let totalCost = this.state.selectedSheet.rate * totalMinutes;
+    this.setState({totalCost: totalCost});
+  }
+  calculateTotalTime() {
+    return this.state.lineItems.reduce(function(prev, cur) {
       return +prev + +cur.minutes;
     }, 0);
-    let totalCost = this.state.selectedSheet.rate * totalMinutes;
-    this.setState({totalCost: totalCost})
   }
   render() {
     return (
@@ -200,15 +203,14 @@ class App extends Component {
                 <div>
                 </div>
                </div> : null}
-               <CardActions>
                  <div>
-                  Total Cost: {new Intl.NumberFormat('en-US', { 
+                  <span className="total-time">Total Time: {this.calculateTotalTime()}</span>
+                  <span>Total Cost: {new Intl.NumberFormat('en-US', { 
                                     style: 'currency', 
                                     currency: 'USD' 
                                 }).format(this.state.totalCost)
-                              }
+                              }</span>
                  </div>
-               </CardActions>
             </Card> 
           </span>    
       </div>
