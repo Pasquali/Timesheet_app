@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./App.css";
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardActions from '@material-ui/core/CardActions';
 import AddLineItem from './Components/AddLineItem';
 import Timesheet from './Components/AddTimesheet';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -134,7 +133,7 @@ class App extends Component {
   }
   calculateCost() {
     let totalMinutes = this.calculateTotalTime();
-    let totalCost = this.state.selectedSheet.rate * totalMinutes;
+    let totalCost = (this.state.selectedSheet.rate/60) * totalMinutes;
     this.setState({totalCost: totalCost});
   }
   calculateTotalTime() {
