@@ -102,6 +102,11 @@ class App extends Component {
       });
       this.setState({timesheets: array}); 
     })
+    .then(() => {
+      if (sheet.id === this.state.selectedSheet.id) {
+        this.setState({selectedSheet: {description: 'Please create or select a timesheet'}});
+      }
+    })
   }
   deleteLineItem(lineItem) {
     fetch('/delete_line_item', {
@@ -125,12 +130,12 @@ class App extends Component {
       });
       this.setState({lineItems: array}); 
     })
+    .then(() => this.calculateCost())
   }
   calculateCost() {
     let totalMinutes = this.state.lineItems.reduce(function(prev, cur) {
       return +prev + +cur.minutes;
     }, 0);
-    console.log(totalMinutes);
     let totalCost = this.state.selectedSheet.rate * totalMinutes;
     this.setState({totalCost: totalCost})
   }
