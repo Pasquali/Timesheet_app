@@ -14,10 +14,6 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "db_user",
-    "password": "password",
-    "database": "database_production",
-    "host": "localhost",
-    "dialect": "postgres"
+    "use_env_variable": "HEROKU_POSTGRESQL_BRONZE_URL"
   }
 }
